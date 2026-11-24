@@ -4,6 +4,8 @@ Search emojis by name **or everyday keyword** from [Ulauncher](https://ulauncher
 
 `em laugh` → 😂 😆 🤣  ·  `em heart` → ❤️ 💕 🩷  ·  `em pray` → 🙏  ·  `em flag india` → 🇮🇳
 
+![Emoji search in Ulauncher](images/screenshot.png)
+
 ## Usage
 
 | Type | Result |
