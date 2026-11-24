@@ -1,5 +1,7 @@
 import json
 import os
+import subprocess
+import sys
 
 import gi
 gi.require_version("IBus", "1.0")
@@ -15,6 +17,7 @@ from ulauncher.api.shared.action.ActionList import ActionList
 from ulauncher.api.shared.action.RenderResultListAction import RenderResultListAction
 
 ICON = "images/icon.svg"
+AUTOPASTE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "autopaste.py")
 MAX = 9
 SKIN = set("\U0001F3FB\U0001F3FC\U0001F3FD\U0001F3FE\U0001F3FF")
 RECENT = os.path.join(os.environ.get("XDG_CACHE_HOME", os.path.expanduser("~/.cache")), "ulauncher-emoji-recent.json")
@@ -86,9 +89,9 @@ def score(query_words, desc, words):
     return total - len(d) / 100  # prefer shorter, more specific names
 
 
-def item(ch, desc):
+def item(ch, desc, hint="Enter: paste into the focused app (also copied)"):
     return ExtensionResultItem(
-        icon=ICON, name=f"{ch}   {desc}", description="Enter: copy  •  then Ctrl+V to paste",
+        icon=ICON, name=f"{ch}   {desc}", description=hint,
         on_enter=ActionList([CopyToClipboardAction(ch), ExtensionCustomAction(ch)]),
     )
 
@@ -96,12 +99,14 @@ def item(ch, desc):
 class Query(EventListener):
     def on_event(self, event, ext):
         q = (event.get_argument() or "").lower().split()
+        hint = ("Enter: paste into the focused app (also copied)" if ext.preferences.get("paste", "yes") == "yes"
+                else "Enter: copy  •  then Ctrl+V to paste")
         show_skin = ext.preferences.get("skin") == "yes" or any(w in ("skin", "tone") for w in q)
         if not q:
             by_char = {ch: desc for ch, desc, _, _ in ext.emojis}
             recent = [c for c in load_recent() if c in by_char]
             picks = (recent + [c for c in DEFAULTS if c not in recent])[:MAX]
-            return RenderResultListAction([item(c, by_char.get(c, "")) for c in picks])
+            return RenderResultListAction([item(c, by_char.get(c, ""), hint) for c in picks])
         ranked = []
         for ch, desc, words, skin in ext.emojis:
             if skin and not show_skin:
@@ -113,12 +118,14 @@ class Query(EventListener):
         if not ranked:
             return RenderResultListAction([ExtensionResultItem(icon=ICON, name="No emoji found",
                                                                description="Try another word", on_enter=None)])
-        return RenderResultListAction([item(ch, desc) for _, ch, desc in ranked[:MAX]])
+        return RenderResultListAction([item(ch, desc, hint) for _, ch, desc in ranked[:MAX]])
 
 
 class Enter(EventListener):
     def on_event(self, event, ext):
         save_recent(event.get_data())
+        if ext.preferences.get("paste", "yes") == "yes":
+            subprocess.Popen([sys.executable, AUTOPASTE, "0.35"], start_new_session=True)
 
 
 class EmojiExtension(Extension):

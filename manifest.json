@@ -6,7 +6,34 @@
   "developer_name": "Shanki200801",
   "icon": "images/icon.svg",
   "preferences": [
-    {"id": "kw", "type": "keyword", "name": "Emoji", "description": "Search emoji", "default_value": "em"},
-    {"id": "skin", "type": "select", "name": "Show skin-tone variants", "description": "List every skin tone, or only the default yellow", "default_value": "no", "options": ["no", "yes"]}
+    {
+      "id": "kw",
+      "type": "keyword",
+      "name": "Emoji",
+      "description": "Search emoji",
+      "default_value": "em"
+    },
+    {
+      "id": "skin",
+      "type": "select",
+      "name": "Show skin-tone variants",
+      "description": "List every skin tone, or only the default yellow",
+      "default_value": "no",
+      "options": [
+        "no",
+        "yes"
+      ]
+    },
+    {
+      "id": "paste",
+      "type": "select",
+      "name": "Auto-paste",
+      "description": "Paste the emoji into the focused app after choosing it (X11). It is always copied too.",
+      "default_value": "yes",
+      "options": [
+        "yes",
+        "no"
+      ]
+    }
   ]
 }
