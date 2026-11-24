@@ -1,0 +1,12 @@
+{
+  "manifest_version": "2",
+  "required_api_version": "2",
+  "name": "Emoji",
+  "description": "Search emojis by name or keyword and copy them",
+  "developer_name": "Shanki200801",
+  "icon": "images/icon.svg",
+  "preferences": [
+    {"id": "kw", "type": "keyword", "name": "Emoji", "description": "Search emoji", "default_value": "em"},
+    {"id": "skin", "type": "select", "name": "Show skin-tone variants", "description": "List every skin tone, or only the default yellow", "default_value": "no", "options": ["no", "yes"]}
+  ]
+}
